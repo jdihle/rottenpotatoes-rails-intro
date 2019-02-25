@@ -11,7 +11,15 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+      if params[:sort_by] == "title"
+        @movies= Movie.all.order(title: :asc)#orders all movies by title by ascending order if think specifies sort by title
+        @header_color = 'hilite'#uses background color to mark currently used sort
+      elsif params[:sort_by] == "release_date"
+        @movies= Movie.all.order(release_date: :asc)#orders all movies by release date if think specifies sort by release date
+        @release_date_color = 'hilite'#uses background color to mark currently used sort
+      else
+        @movies= Movie.all#if no sort link is clicked on default display
+      end
   end
 
   def new
