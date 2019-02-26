@@ -12,13 +12,13 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.possible_ratings
       if params["sort_by"] == "title"
-        @movies= Movie.all.order(title: :asc)#orders all movies by title by ascending order if the link specifies sort by title
-        @title_header_color = "hilite"#uses background cgit commit -am "part 2 complete"olor to mark currently used sort
+        @movies= Movie.all.order(title: :asc)#orders all movies by title by ascending order if think specifies sort by title
+        @title_header_color = "hilite"#uses background color to mark currently used sort
       elsif params["sort_by"] == "release_date"
-        @movies= Movie.all.order(release_date: :asc)#orders all movies by release date if the link specifies sort by release date
+        @movies= Movie.all.order(release_date: :asc)#orders all movies by release date if think specifies sort by release date
         @release_date_color = "hilite"#uses background color to mark currently used sort
       else
-        @movies= Movie.where(:rating => params["ratings"].keys)#if no sort link is clicked on default display but apply filter
+        @movies= Movie.where("rating" => params["ratings"].keys)#if no sort link is clicked on default display but apply filter
       end
   end
 
