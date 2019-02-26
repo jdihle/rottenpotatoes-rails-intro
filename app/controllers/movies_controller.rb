@@ -10,23 +10,39 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
   def index
-    params[:ratings] = session[:saved_ratings] if session[:saved_ratings]!=nil#if session settings are there load
-    params[:sort_by] = session[:saved_sort] if session[:saved_sort]!=nil#if session settings are there load
     @all_ratings = Movie.possible_ratings
     currMovies = Movie.all
       if params[:ratings]#check if ratings are not nil also filter
         currMovies = currMovies.where("rating" => params[:ratings].keys)#if no sort link is clicked on default display but apply filter
+        session[:saved_ratings] = params[:ratings] if params[:ratings]!=nil
+      else
+        params[:ratings] = session[:saved_ratings] if session[:saved_ratings]!=nil#if session settings are there load
+        currMovies = currMovies.where("rating" => params[:ratings].keys)#if no sort link is clicked on default display but apply filter
+        session[:saved_ratings] = params[:ratings] if params[:ratings]!=nil
       end
+      
+      #sort code
       if params[:sort_by] == "title"#the sorter
         currMovies = currMovies.order(title: :asc)#orders all movies by title by ascending order if think specifies sort by title
         @title_header = "hilite"#uses background color to mark currently used sort
+        session[:saved_sort] = params[:sort_by] if params[:sort_by]!=nil
       elsif params[:sort_by] == "release_date"
         currMovies = currMovies.order(release_date: :asc)#orders all movies by release date if think specifies sort by release date
         @release_date = "hilite"#uses background color to mark currently used sort
+        session[:saved_sort] = params[:sort_by] if params[:sort_by]!=nil
+      else#if user has done nothing
+          params[:sort_by] = session[:saved_sort] if session[:saved_sort]!=nil#if session settings are there load
+          if params[:sort_by] == "title"#the sorter
+            currMovies = currMovies.order(title: :asc)#orders all movies by title by ascending order if think specifies sort by title
+            @title_header = "hilite"#uses background color to mark currently used sort
+            session[:saved_sort] = params[:sort_by] if params[:sort_by]!=nil
+          elsif params[:sort_by] == "release_date"
+            currMovies = currMovies.order(release_date: :asc)#orders all movies by release date if think specifies sort by release date
+            @release_date = "hilite"#uses background color to mark currently used sort
+            session[:saved_sort] = params[:sort_by] if params[:sort_by]!=nil
+          end
       end
-    @movies = currMovies
-    session[:saved_ratings] = params[:ratings] if params[:ratings]!=nil
-    session[:saved_sort] = params[:sort_by] if params[:sort_by]!=nil
+    @movies = currMovies#return movie hash
   end
 
   def new
