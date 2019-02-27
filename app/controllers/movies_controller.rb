@@ -13,12 +13,12 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.possible_ratings
     currMovies = Movie.all
     #filter
-      if params[:ratings]&&params[:ratings]!=nil#check if ratings are all false
+      if params[:ratings]#check if ratings are all false
         currMovies = currMovies.where("rating" => params[:ratings].keys)#if no sort link is clicked on default display but apply filter
         session[:saved_ratings] = params[:ratings] if params[:ratings]!=nil
       else #  some options are selected
         params[:ratings] = session[:saved_ratings] if session[:saved_ratings]!=nil#if session settings are there load
-        currMovies = currMovies.where("rating" => params[:ratings].keys)#if no sort link is clicked on default display but apply filter
+        currMovies = currMovies.where("rating" => params[:ratings].keys) if params[:ratings]!=nil#if no sort link is clicked on default display but apply filter
         session[:saved_ratings] = params[:ratings] if params[:ratings]!=nil
       end
       
